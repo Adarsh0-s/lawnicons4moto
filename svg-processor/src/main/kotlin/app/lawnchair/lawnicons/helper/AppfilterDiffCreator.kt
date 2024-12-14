@@ -21,9 +21,7 @@ import java.io.File
 object AppfilterDiffCreator {
     private const val OUTPUT_FILE = "/xml/appfilter_diff.xml"
 
-    private fun getPreviousReleaseLines(
-        appFilterFile: String,
-    ): List<String> {
+    private fun getPreviousReleaseLines(appFilterFile: String): List<String> {
         return try {
             runGitCommand(listOf("fetch", "--tags"))
 
@@ -39,11 +37,13 @@ object AppfilterDiffCreator {
             }
 
             runGitCommand(listOf("show", "$latestTag:$appFilterFile"))
+                .filterNot { it.trim().startsWith("<?xml") || it.trim().startsWith("<resources") }
         } catch (e: Exception) {
             println(e)
             listOf()
         }
     }
+
 
     private fun runGitCommand(
         args: List<String>,
@@ -70,14 +70,18 @@ object AppfilterDiffCreator {
 
     private fun readFileContents(filePath: String): List<String> {
         return File(filePath).readLines()
+            .filterNot { it.trim().startsWith("<?xml") || it.trim().startsWith("<resources") }
     }
+
 
     private fun getLineDiff(
         mainLines: List<String>,
         developLines: List<String>,
     ): List<String> {
         return developLines.filterNot { it in mainLines }
+            .filterNot { it.trim().startsWith("<?xml") || it.trim().startsWith("<resources>") || it.trim().startsWith("</resources>") }
     }
+
 
     private fun writeDiffToFile(
         diff: List<String>,
@@ -86,22 +90,32 @@ object AppfilterDiffCreator {
         val outputFile = File(resDir + OUTPUT_FILE)
         val schema = "<?xml version=\"1.0\" encoding=\"UTF-8\"?>"
 
-        if (diff.isEmpty()) {
+        // Filter out any lines that could conflict with the XML structure
+        val filteredDiff = diff.filterNot {
+            it.trim().startsWith("<?xml") || it.trim().startsWith("<resources>") || it.trim().startsWith("</resources>")
+        }
+
+        // Handle empty diff case
+        if (filteredDiff.isEmpty()) {
             outputFile.writeText("$schema\n<resources></resources>")
             return
         }
 
+        // Build XML content
         val xmlContent = buildString {
             appendLine(schema)
             appendLine("<resources>")
-            diff.forEach { line ->
+            filteredDiff.forEach { line ->
                 appendLine("    $line")
             }
             appendLine("</resources>")
         }
 
+        // Write content to file
         outputFile.writeText(xmlContent)
     }
+
+
 
     fun createAppfilterDiff(
         resDir: String,

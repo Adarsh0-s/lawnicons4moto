@@ -85,6 +85,7 @@ object SvgFilesProcessor {
     private fun convertToVector(svgSource: Path, vectorTargetPath: Path) {
         // convert only if it is .svg
         if (svgSource.fileName.toString().endsWith(".svg")) {
+
             val targetFile = XmlUtil.getFileWithExtension(vectorTargetPath)
             val fileOutputStream = FileOutputStream(targetFile)
             Svg2Vector.parseSvgToXml(svgSource, fileOutputStream)
