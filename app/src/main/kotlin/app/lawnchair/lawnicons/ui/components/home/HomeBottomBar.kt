@@ -3,7 +3,13 @@ package app.lawnchair.lawnicons.ui.components.home
 import android.content.Context
 import android.content.Intent
 import android.net.Uri
+import androidx.compose.foundation.background
+import androidx.compose.foundation.border
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.imePadding
 import androidx.compose.foundation.layout.requiredSize
+import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.rounded.Search
 import androidx.compose.material3.BottomAppBar
@@ -21,8 +27,10 @@ import androidx.compose.material3.TooltipDefaults
 import androidx.compose.material3.rememberTooltipState
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import app.lawnchair.lawnicons.R
 import app.lawnchair.lawnicons.model.IconRequestModel
@@ -39,39 +47,29 @@ fun HomeBottomBar(
 ) {
     BottomAppBar(
         actions = {
+//            make empty space
+            Box(
+                modifier = Modifier.size(20.dp),
+            )
             SimpleTooltipBox(
-                label = stringResource(id = R.string.github),
+                label = stringResource(id = R.string.apply),
             ) {
                 IconButton(
                     onClick = {
-                        val webpage = Uri.parse(Constants.GITHUB)
-                        val intent = Intent(Intent.ACTION_VIEW, webpage)
+//                        com.motorola.personalize.app.IconPacksActivity
+                        val intent = Intent();
+                        intent.setClassName("com.motorola.personalize", "com.motorola.personalize.app.IconPacksActivity")
                         if (intent.resolveActivity(context.packageManager) != null) {
                             context.startActivity(intent)
                         }
                     },
+//                   set backgroundColor as @color/primaryBackground
+                    modifier = Modifier.background(color = BottomAppBarDefaults.bottomAppBarFabColor, shape = RoundedCornerShape(24)).size(160.dp, 60.dp),
                 ) {
                     Icon(
-                        painter = painterResource(id = R.drawable.github_foreground),
-                        contentDescription = stringResource(id = R.string.github),
-                        modifier = Modifier.requiredSize(24.dp),
-                    )
-                }
-            }
-
-            IconRequestIconButton(
-                snackbarHostState = snackbarHostState,
-                iconRequestModel = iconRequestModel,
-            )
-
-            SimpleTooltipBox(
-                label = stringResource(id = R.string.about),
-            ) {
-                IconButton(onClick = onNavigate) {
-                    Icon(
-                        painter = painterResource(id = R.drawable.about_icon),
-                        contentDescription = stringResource(id = R.string.about),
-                        modifier = Modifier.requiredSize(24.dp),
+                        painter = painterResource(id = R.drawable.applybutton),
+                        contentDescription = stringResource(id = R.string.apply),
+                        modifier = Modifier.requiredSize(100.dp),
                     )
                 }
             }
@@ -115,4 +113,16 @@ private fun SimpleTooltipBox(
     ) {
         content()
     }
+}
+
+@Preview
+@Composable
+private fun HomeBottomBarPreview() {
+    HomeBottomBar(
+        context = androidx.compose.ui.platform.LocalContext.current,
+        iconRequestModel = null,
+        snackbarHostState = SnackbarHostState(),
+        onNavigate = {},
+        onExpandSearch = {},
+    )
 }

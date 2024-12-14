@@ -3,13 +3,17 @@ package app.lawnchair.lawnicons.ui.destination
 import android.annotation.SuppressLint
 import androidx.compose.animation.Crossfade
 import androidx.compose.foundation.ExperimentalFoundationApi
+import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.imePadding
 import androidx.compose.foundation.lazy.grid.GridItemSpan
 import androidx.compose.foundation.lazy.grid.rememberLazyGridState
+import androidx.compose.material3.Card
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.SnackbarHost
 import androidx.compose.material3.SnackbarHostState
 import androidx.compose.material3.Surface
+import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
@@ -17,6 +21,7 @@ import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.focus.FocusRequester
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation.NavGraphBuilder
@@ -183,18 +188,16 @@ private fun Home(
     }
 }
 
-@PreviewLawnicons
+@Preview
 @Composable
 private fun HomePreview() {
     LawniconsTheme {
-        Surface(Modifier.fillMaxSize()) {
-            Home(
-                onNavigateToAbout = {},
-                onNavigateToNewIcons = {},
-                isExpandedScreen = true,
-                onSendResult = {},
-                lawniconsViewModel = DummyLawniconsViewModel(),
-            )
-        }
+        Home(
+            onNavigateToAbout = {},
+            onNavigateToNewIcons = {},
+            isExpandedScreen = false,
+            isIconPicker = false,
+            onSendResult = {},
+        )
     }
 }
